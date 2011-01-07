@@ -172,7 +172,10 @@ static NSString *gapVersion;
 	CGRect webViewBounds = [ [ UIScreen mainScreen ] applicationFrame ] ;
 	webViewBounds.origin = screenBounds.origin;
 	webView = [ [ UIWebView alloc ] initWithFrame:webViewBounds];
-    [webView setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+    
+	// this fixes wrong window.innerHeight on iOS 4.2
+    webView.autoresizesSubviews = YES;
+	webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
 	
 	viewController.webView = webView;
 	[viewController.view addSubview:webView];
