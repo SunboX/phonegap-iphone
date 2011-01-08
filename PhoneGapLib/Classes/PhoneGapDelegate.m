@@ -382,13 +382,30 @@ static NSString *gapVersion;
     return temp;
 }
 
+/*
+ * Wait one second, avoids flickering when web resources get loaded
+ */
+- (IBAction)delayedWebViewDidFinishLoad:(NSTimer*)timer
+{
+	UIWebView* theWebView = [timer userInfo];
+	
+	/*
+	 * Hide the Top Activity THROBER in the Battery Bar
+	 */
+	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	activityView.hidden = YES;	
+	
+	imageView.hidden = YES;
+	
+	[window bringSubviewToFront:viewController.view];
+	webView = theWebView; 	  
+}
+
 /**
  Called when the webview finishes loading.  This stops the activity view and closes the imageview
  */
 - (void)webViewDidFinishLoad:(UIWebView *)theWebView {
-	/*
-	 * Hide the Top Activity THROBER in the Battery Bar
-	 */
 	
     NSDictionary *deviceProperties = [ self deviceProperties];
     NSMutableString *result = [[NSMutableString alloc] initWithFormat:@"DeviceInfo = %@;", [deviceProperties JSONFragment]];
@@ -408,13 +425,7 @@ static NSString *gapVersion;
     [theWebView stringByEvaluatingJavaScriptFromString:result];
 	[result release];
 	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	activityView.hidden = YES;	
-
-	imageView.hidden = YES;
-	
-	[window bringSubviewToFront:viewController.view];
-	webView = theWebView; 	
+	[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(delayedWebViewDidFinishLoad:) userInfo:theWebView repeats:NO];  	
 }
 
 
