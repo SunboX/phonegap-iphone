@@ -255,7 +255,20 @@ static NSString *gapVersion;
 	 * imageView - is the Default loading screen, it stay up until the app and UIWebView (WebKit) has completly loaded.
 	 * You can change this image by swapping out the Default.png file within the resource folder.
 	 */
-	UIImage* image = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Default" ofType:@"png"]];
+	UIImage* image;
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+	{
+		// The device is an iPad running iPhone 3.2 or later
+		if([UIApplication sharedApplication].statusBarOrientation == 1)
+			image = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Default-Portrait" ofType:@"png"]];
+		else 
+			image = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Default-Landscape" ofType:@"png"]];
+	}
+	else
+	{
+		// The device is an iPhone or iPod touch
+		image = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Default" ofType:@"png"]];
+	}
 	imageView = [[UIImageView alloc] initWithImage:image];
 	[image release];
 	
